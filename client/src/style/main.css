@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');
+
+body{
+  margin: 0;
+  padding: 0;
+}
+.FormMain{
+  padding: 20px;
+  background-color: white;
+  border:none;
+  border-radius: 10px;
+  font-family: 'Quicksand', sans-serif;
+  margin-top: 10%;
+}
+
+
+.ButtonTest{
+  border-radius: 7px;
+  border: 1.3px solid rgb(182, 182, 182);
+ width: 100%;
+ background-color: rgb(255, 255, 255);
+ height: 45px;
+}
+
+.ButtonTestActive{
+  border: 1.3px solid rgb(83, 157, 255);
+  color: rgb(83, 157, 255);
+}
+
+.containerSpace{
+  margin-bottom: 20px;
+}
+
+
+.NavBar{
+  background-color: rgb(0, 223, 223);
+  width: 100%;
+}
+ 
+.UpperSpace {
+  margin-top: 7%;
+}
+
+@media only screen and (max-width: 600px) {
+  .UpperSpace {
+    margin-top: 25%;
+  }
+}
+
