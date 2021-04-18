@@ -1,4 +1,4 @@
-import {addSubmit,findSub,findSubById}  from '../controller/submitController.js';
+import {addSubmit,findSub,findSubById,findPdfById,addMarks,findPdfAll}  from '../controller/submitController.js';
 
 import multer from 'multer';
 import mongoose from 'mongoose';
@@ -22,17 +22,32 @@ const storage = multer.diskStorage({
 
 
 const route = (app)=>{
-    app.route('/list')
-  
+  // adding data 
+    app.route('/submit')
+    .post(addSubmit);
 
-    .post(addSubmit)
+    // getting student submission data
+    app.route('/get/:exam')
     .get(findSub);
 
-    app.route('/list/:subid')
+    // getting submission by id
+    app.route('/each/:subid')
     .get(findSubById);
 
+    app.route('/eachpdf/:subid')
+    .get(findPdfById);
+
+    app.route('/allpdf')
+    .get(findPdfAll);
+
+    //add marks
+    app.route('/marks/:id')
+    .put(addMarks);
+
   
- 
+
+
+  // uploading PDF with name given by 
     app.post("/upload", uploadStorage.single("file"), (req, res) => {
         console.log(req.file.originalname)
      
@@ -53,7 +68,7 @@ const route = (app)=>{
     
         newSub.save((err,submitData)=>{
             if(err){
-                console.log("_________________error_+++++++++")
+                console.log(err,"in upload route..!")
                 res.send(err);
             }
     

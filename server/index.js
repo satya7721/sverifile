@@ -8,6 +8,7 @@ import route from './routes/submitRoutes.js';
  
 import path from 'path'
  
+console.log(process.env.APP_BASE_URL)
 const app = express();
 
 // routes
