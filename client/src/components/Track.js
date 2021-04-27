@@ -7,7 +7,7 @@ export default function Track() {
     const [pro,setPro]=useState(10);
 
     return (
-        <div>
+        <div className="UpperSpace">
            <Card centered >
       <Card.Content>
         <Card.Header>Submission Progress</Card.Header>

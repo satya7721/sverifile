@@ -1,12 +1,91 @@
-import React from 'react'
+import React, { useState ,useEffect} from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import '../style/main.css';
-import { Button, Checkbox, Form,Grid, Icon, Input,Dropdown} from 'semantic-ui-react'
-
+import { Button, Checkbox, Form,Grid, Icon, Input,Message} from 'semantic-ui-react'
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import {reactLocalStorage} from 'reactjs-localstorage'; 
+var querystring = require('querystring');
  
- 
-const TeacherLogin = () => (
+const TeacherLogin = () =>{
 
+  const history = useHistory();
+  const handleClick = () => history.push('/board');
+
+  const [state,setState]= useState({
+    name:"",
+    mail:"",
+    password:"",
+    subject:"",
+    
+  })
+  const [loading,setLoading]=useState(false);
+  const [fail,setFail]=useState(false);
+
+ const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+}
+
+const change=(e)=>{
+  setState({
+    ...state,
+    [e.target.name]:e.target.value,
+     
+    
+  })
+  
+ 
+}
+useEffect(() => {
+  setState({
+    ...state,
+    [state.mail]:"ok",
+     
+    
+  })
+      
+})
+const update=()=>{
+ 
+  console.log(state)
+}
+
+
+
+const PUSH=()=>{
+  update()
+  setLoading(true);
+  axios.post("http://localhost:4000/teacherlogin" ,querystring.stringify({
+    mail:state.mail,
+    password:state.password
+  }),config).then(res=>{
+  
+    setLoading(false);
+    if(res.data==false){
+      setFail(true)
+    }else{
+    
+      let name = state.mail;
+      reactLocalStorage.set('name', state.subject);
+      handleClick()
+    }
+    
+    
+  }).catch(err=>{
+    console.log(err);
+    setLoading(false);
+  })
+ 
+ }
+
+ useEffect(() => {
+  setState(state)
+    
+} )
+
+return(
   <Grid.Column mobile={16} tablet={8} computer={6} >
     <Form className="FormMain">
         <div className="mt-3 mb-5">
@@ -23,22 +102,25 @@ const TeacherLogin = () => (
         
     <Form.Field >
     <div className="containerSpace">
- 
+ {
+   fail&&
+   <Message color='red'>wrong Credentials</Message>
+ }
  </div>
     
       <label>Mail</label>
-      <input placeholder='mail..' />
+      <input name="mail" onChange={change} required placeholder='mail..' />
     </Form.Field>
     <Form.Field>
       <label>Password</label>
-      <input placeholder='Password..' />
+      <input name="password" type="password" onChange={change} required  placeholder='Password..' />
     </Form.Field>
 
     
    
     <Form.Field>
     <label>Subject</label>
-    <Input list='languages' placeholder='Choose Subject...' />
+    <Input name="subject" onChange={change} list='languages' required placeholder='Choose Subject...' />
     <Grid.Column >
     <datalist id='languages'>
       <option value='CPP'>CPP</option>
@@ -54,13 +136,13 @@ const TeacherLogin = () => (
  </div>
   
     <Grid.Column>
-    <Button fluid type='submit' color="blue" >Submit <Icon name="angle right" ></Icon></Button>
+    <Button fluid type='submit' color="blue" onClick={PUSH} >Submit <Icon name="angle right" ></Icon></Button>
     </Grid.Column>
     
     
   </Form>
 </Grid.Column>
-
-)
+);
+}
 
 export default TeacherLogin;

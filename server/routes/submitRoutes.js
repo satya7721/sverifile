@@ -1,30 +1,38 @@
-import {addSubmit,findSub,findSubById,findPdfById,addMarks,findPdfAll}  from '../controller/submitController.js';
+import {addSubmit,findSub,findSubById,findPdfById,addMarks,findPdfAll,TeacherLogin,Download}  from '../controller/submitController.js';
 
 import multer from 'multer';
 import mongoose from 'mongoose';
 
+
+import { v4 as uuidv4 } from 'uuid';
+
 import {File} from '../models/file.js';
- 
+import path from 'path'
 import {Submit} from '../models/submitModel.js';
  
 
 const Sub = mongoose.model('submit',Submit);
-const fileM = mongoose.model('filem',File);
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads")
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + "-" + file.originalname)
-    },
-  })
-  const uploadStorage = multer({ storage: storage })
+const FileM = mongoose.model('files',File);
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
 
+    cb(null, "./uploads"); //important this is a direct path fron our current file to storage location
+  },
+  filename: (req, file, cb) => {
+    
+    const id =  uuidv4();
 
+    cb(null, id + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: fileStorageEngine });
 const route = (app)=>{
+
+  
   // adding data 
     app.route('/submit')
     .post(addSubmit);
+    
 
     // getting student submission data
     app.route('/get/:exam')
@@ -37,49 +45,39 @@ const route = (app)=>{
     app.route('/eachpdf/:subid')
     .get(findPdfById);
 
-    app.route('/allpdf')
+    app.route('/allpdf/')
     .get(findPdfAll);
 
     //add marks
-    app.route('/marks/:id')
+    app.route('/marks/')
     .put(addMarks);
 
-  
+    app.route('/upload').post(upload.single("file"), (req, res,next) => {
+      console.log(req.file);
+      let FILE = new FileM({
+        filename:req.file.filename
+    });
+      FILE.save((err,submitData)=>{
+        if(err){
+            console.log("_________________error_+++++++++")
+            res.send(err);
+        }
+
+        res.json(submitData);
+    })
+
+    });
 
 
-  // uploading PDF with name given by 
-    app.post("/upload", uploadStorage.single("file"), (req, res) => {
-        console.log(req.file.originalname)
-     
-
-        const {id,check,remark,obtainedmark,outofmark,mailed} = req.body;
-        console.log(req.body);
-      const filename = req.file.originalname;
-        let newSub = new fileM({
-           id,
-           filename,
-           check,
-           remark,
-           obtainedmark,
-           outofmark,
-           mailed
-
-        });
+    app.route('/teacherlogin')
+    .post(TeacherLogin);
     
-        newSub.save((err,submitData)=>{
-            if(err){
-                console.log(err,"in upload route..!")
-                res.send(err);
-            }
+    app.route('/zip')
+    .get(Download);
+
     
-            res.json(submitData);
-        })
-         
-      })
-      
-      
-      
 }
+
 
 
 export default route;

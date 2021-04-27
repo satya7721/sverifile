@@ -24,6 +24,8 @@ import {
 export default function App() {
   
 
+
+    
   const pathname = window.location.pathname;
    
   function NavBar(){

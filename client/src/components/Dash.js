@@ -1,15 +1,21 @@
-import React, { Component } from 'react'
-import { Input, Menu,Grid, Card, Container, Dropdown,Label,Icon, MenuItem } from 'semantic-ui-react'
+import React, { Component,useState } from 'react'
+import { Input, Menu,Grid, Button, Container, Dropdown,Label,Icon, Modal } from 'semantic-ui-react'
 import '../style/main.css'
-export default class MenuExampleSecondary extends Component {
-  state = { activeItem: 'home' }
+import axios from 'axios';
+import fs from 'fs'
+export default function  MenuExampleSecondary()  {
+ 
+   const Delete = ()=>{
+    window.open("http://localhost:4000/zip", "_blank")
+    setOpen(false)
+   }
+     
+    
+  
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-
-  render() {
-    const { activeItem } = this.state
-
-    return (
+  const [open,setOpen]=useState(false);
+  return(
+    
       <Grid.Column  >
         <div className="NavBar">
         <Menu fixed='top' inverted >
@@ -25,13 +31,33 @@ export default class MenuExampleSecondary extends Component {
             <Dropdown.Item>Log data</Dropdown.Item>
             <Dropdown.Divider></Dropdown.Divider>
             <Dropdown.Item>
-            <Label color="green">
-          <Icon name='checkmark' />
-              23
-          <Label.Detail>checked pdf</Label.Detail>
-           </Label>  
+            <Modal
+      centered={false}
+      open={open}
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
+      trigger={
+        <Label color="red">
+        <Icon name='checkmark' />
+            23
+        <Label.Detail>Clear Server</Label.Detail>
+         </Label>  
+      }
+    >
+      <Modal.Header>Are you sure..!</Modal.Header>
+      <Modal.Content>
+        <Modal.Description>
+          Type "YES".
+        </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button onClick={Delete}>OK</Button>
+      </Modal.Actions>
+    </Modal>
+            
             </Dropdown.Item>
-            <Dropdown.Item>My account</Dropdown.Item>
+            <Dropdown.Item >Statistics</Dropdown.Item>
+            
             <Dropdown.Divider />
            
             <Dropdown.Item>Logout</Dropdown.Item>
@@ -42,9 +68,9 @@ export default class MenuExampleSecondary extends Component {
     </Menu>
 
          </div>
-      
+
       
       </Grid.Column>
-    )
-  }
+ 
+  )
 }

@@ -2,29 +2,36 @@ import mongoose from 'mongoose';
 
 import {Submit} from '../models/submitModel.js';
 import {File} from '../models/file.js';
-import { v4 as uuidv4 } from 'uuid';
-
+import {Teacher} from '../models/teacher.js';
+import path from 'path'
+import AdmZip from 'adm-zip' 
+import fs from 'fs'
 const FileM = mongoose.model('file',File);
 
 const Sub = mongoose.model('submit',Submit);
+const T = mongoose.model('teacher',Teacher);
+
+ 
+
 
 export const addSubmit = (req,res)=>{
     const {name,mail,mode,year,division,roll,subject} = req.body;
-    console.log(req.body);
-const id =  uuidv4();
+     const fileid = req.body.id;
+      
     let newSub = new Sub({
-        id,
+        fileid,
         name,
         mail,
         mode,
         year,
         division,
-        subject
+        subject,
+        roll
     });
 
     newSub.save((err,submitData)=>{
         if(err){
-            console.log("_________________error_+++++++++")
+            console.log(err)
             res.send(err);
         }
 
@@ -72,13 +79,14 @@ export const findPdfById = (req,res)=>{
 
 export const addMarks = (req,res)=>{
 
-    FileM.updateOne({_id:req.params.id},
+    Sub.updateOne({fileid:req.body.id},
         {
-            obtainedmark:req.body.obtainedmark,
-            outofmark:req.body.outofmark
+            obtainedmark:req.body.ob,
+            outofmark:req.body.outm,
+            check:true
         },(error,data)=>{
             if(error){
-                res.send(error);
+                res.send(false);
             }else{
                 res.send(data)
             }
@@ -90,12 +98,73 @@ export const addMarks = (req,res)=>{
 
 
 export const findPdfAll = (req,res)=>{
-
-    FileM.find({},(err,submitData)=>{
+     
+    Sub.find({subject:req.query.subject},(err,submitData)=>{
         if(err){
-            res.send(err);
+            res.send([ ]);
+            
         }
 
         res.json(submitData);
     })
 }
+
+export const TeacherLogin = (req,res)=>{
+ 
+
+    T.find({mail:req.body.mail},(err,submitData)=>{
+        if(err){
+            console.log("_________________error_+++++++++")
+            res.send(err);
+        }
+        if(!submitData.length){
+            res.send(false)
+        }else{
+       if(submitData[0].mail.localeCompare(req.body.password)){
+
+        res.json(submitData[0].name);
+       }else{
+           res.send(false)
+       }
+    }
+
+    })
+
+    
+}
+
+
+
+
+export const Download = async (req,res)=>{
+    const zip = new AdmZip(); 
+    console.log(path.basename)
+    
+    const p = "./uploads/"
+    try {
+         
+        console.log("YES")
+        const files = await fs.promises.readdir( './uploads' );
+        for( const file of files ) {
+            zip.addLocalFile("./uploads/"+file); 
+        }
+        for( const file of files ) {
+            fs.unlinkSync(p+file)
+        }
+       
+      } catch(err) {
+        console.error(err)
+      }
+    Sub.deleteMany().then(()=>{
+    const downloadName = `${Date.now()}.zip`; 
+    const data = zip.toBuffer(); 
+    res.set('Content-Type','application/octet-stream'); 
+    res.set('Content-Disposition',`attachment; filename=${downloadName}`); 
+    res.set('Content-Length',data.length); 
+    res.send(downloadName); 
+    }).catch(()=>{
+        res.send(false);
+    })
+
+}
+ 
