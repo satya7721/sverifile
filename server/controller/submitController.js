@@ -28,7 +28,9 @@ export const addSubmit = (req,res)=>{
         subject,
         roll
     });
+    try{
 
+   
     newSub.save((err,submitData)=>{
         if(err){
             console.log(err)
@@ -37,6 +39,9 @@ export const addSubmit = (req,res)=>{
 
         res.json(submitData);
     })
+    }catch{
+        res.send(false)
+    }
 }
 
 
@@ -78,7 +83,7 @@ export const findPdfById = (req,res)=>{
 
 
 export const addMarks = (req,res)=>{
-
+try{
     Sub.updateOne({fileid:req.body.id},
         {
             obtainedmark:req.body.ob,
@@ -92,13 +97,16 @@ export const addMarks = (req,res)=>{
             }
         }
     )
+}catch{
+    res.send("EROOR");
+}
      
 
 }
 
 
 export const findPdfAll = (req,res)=>{
-     
+     try{
     Sub.find({subject:req.query.subject},(err,submitData)=>{
         if(err){
             res.send([ ]);
@@ -106,11 +114,13 @@ export const findPdfAll = (req,res)=>{
         }
 
         res.json(submitData);
-    })
+    })}catch{
+        res.send([])
+    }
 }
 
 export const TeacherLogin = (req,res)=>{
- 
+ try{
 
     T.find({mail:req.body.mail},(err,submitData)=>{
         if(err){
@@ -129,6 +139,9 @@ export const TeacherLogin = (req,res)=>{
     }
 
     })
+}catch{
+    res.send(false)
+}
 
     
 }
@@ -138,7 +151,8 @@ export const TeacherLogin = (req,res)=>{
 
 export const Download = async (req,res)=>{
     const zip = new AdmZip(); 
-    console.log(path.basename)
+  
+   
     
     const p = "./uploads/"
     try {
@@ -163,7 +177,13 @@ export const Download = async (req,res)=>{
     res.set('Content-Length',data.length); 
     res.send(downloadName); 
     }).catch(()=>{
-        res.send(false);
+        const downloadName = `${Date.now()}.zip`; 
+    const data = zip.toBuffer(); 
+    res.set('Content-Type','application/octet-stream'); 
+    res.set('Content-Disposition',`attachment; filename=${downloadName}`); 
+    res.set('Content-Length',data.length); 
+    res.send(downloadName);
+        res.send("false");
     })
 
 }

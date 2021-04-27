@@ -53,7 +53,7 @@ const route = (app)=>{
     .put(addMarks);
 
     app.route('/upload').post(upload.single("file"), (req, res,next) => {
-      console.log(req.file);
+      try{ 
       let FILE = new FileM({
         filename:req.file.filename
     });
@@ -65,6 +65,9 @@ const route = (app)=>{
 
         res.json(submitData);
     })
+  }catch{
+    res.send("0000-not-ok");
+  }
 
     });
 

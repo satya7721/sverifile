@@ -11,7 +11,7 @@ export const File = new Schema({
     filename:{
         type:String,
         default:"notfound.pdf"
-    }
+    }                           
 
    
 }, { timestamps: true });

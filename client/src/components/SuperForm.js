@@ -3,7 +3,9 @@ import 'semantic-ui-css/semantic.min.css'
 import '../style/main.css';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { Button, Image,Divider,Segment, Form,Grid, GridColumn, Icon, Input,Dropdown} from 'semantic-ui-react'
+import {reactLocalStorage} from 'reactjs-localstorage'; 
+
+import { Button, Image,Divider,Segment, Form,Grid, Message, Icon, Input} from 'semantic-ui-react'
  
 var querystring = require('querystring');
 const options = [
@@ -33,7 +35,7 @@ const FormExampleForm = (props) => {
   })
 
   const [loading,setLoading]=useState(false);
- 
+  const [Error,setError]=useState(false);
   const fileInputRef = useRef(null);
   const onTargetClick = () => {
     fileInputRef.current.click()
@@ -85,9 +87,9 @@ const config1 = {
 
  // on submit 
 
- const PUSH=()=>{
-  axios.post("http://localhost:4000/submit" ,querystring.stringify({
-    id:state.id,
+ const PUSH=(T)=>{
+  axios.post("https://sverifiles.herokuapp.com/submit" ,querystring.stringify({
+    id:T,
     name:state.name,
     mail:state.mail,
     mode:state.exam,
@@ -96,25 +98,34 @@ const config1 = {
     subject:state.subject,
     roll:state.roll
   }),config).then(res=>{
-  
+    reactLocalStorage.set('id', T);
     setLoading(false);
-    
+    handleClick()
   }).catch(err=>{
     console.log(err);
     setLoading(false);
   })
  }
 
- const PUSHFILE=()=>{
+ const PUSHFILE= async ()=>{
+   let E = false;
+   if(state.file==null){
+     E=true;
+     setError(true);
+     setError(true);
+      
+   }
+   if(!E){
+     setError(false)
    setLoading(true);
    let formData =new FormData();
    
    formData.append("file", state.file);
-   console.log(state.file)
+    
    formData.append("newname", "909090");
-  console.log(formData)
  
-  axios.post("http://localhost:4000/upload/" ,formData,config1).then(res=>{
+ 
+  await axios.post("https://sverifiles.herokuapp.com/upload/" ,formData,config1).then(res=>{
      const idTmp = res.data.filename;
      const T = idTmp.split(".")
       
@@ -125,22 +136,22 @@ const config1 = {
        
       
     })
-    setState({
-      ...state,
-      ["id"]:T[0],
-       
-      
-    })
-    PUSH();
+ 
+    
+    PUSH(T[0]);
     
   }).catch(err=>{
     console.log(err);
     setLoading(false);
   })
+ }else{
+   E=false;
  }
+}
 
 return(
   <Grid.Column mobile={16} tablet={8} computer={6} >
+    
     <Form className="FormMain">
         <div className="mt-3 mb-5">
         <h3>
@@ -150,7 +161,12 @@ return(
             A platform for all academics related submissions
         </p>
          
-        </div>
+        </div>{
+          Error &&
+          <Message color="red" floating>
+          Select vaild file !
+        </Message>
+        }
        
         
     <Form.Field >
@@ -250,7 +266,7 @@ return(
  
  </div>
     <Form.Field  >
-    <input required type="file" ref={fileInputRef} onChange={FilePush} name="file" style={{display:"none"}} />
+    <input  type="file" ref={fileInputRef} onChange={FilePush} name="file" style={{display:"none"}} />
    
 <Button onClick={onTargetClick}   fluid   icon labelPosition='left'  color="blue" inverted > <Icon name="file alternate" ></Icon>{
   state.file!=null ? state.file.name : "File"

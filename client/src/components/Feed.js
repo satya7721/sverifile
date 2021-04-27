@@ -1,9 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import { Card ,Grid,Menu,Label, Icon,Button,Modal,Image} from 'semantic-ui-react'
 import ReactExport from "react-export-excel";
- 
+import {reactLocalStorage} from 'reactjs-localstorage'; 
 import axios from 'axios';
-import {ExportCSV} from '../components/Xl.js';
 import ModalOP from '../components/Elements/Modal.js'
 export default function Feed() {
   const [name, setName] = useState("Python")
@@ -25,7 +24,7 @@ export default function Feed() {
     if(!load){
     setName(localStorage.getItem('name',"CPP"))
     console.log(name)
-    axios.get(`http://localhost:4000/allpdf`,{
+    axios.get(`https://sverifiles.herokuapp.com/allpdf`,{
       params:{
         subject:name
       }

@@ -6,7 +6,7 @@ import fs from 'fs'
 export default function  MenuExampleSecondary()  {
  
    const Delete = ()=>{
-    window.open("http://localhost:4000/zip", "_blank")
+    window.open("https://sverifiles.herokuapp.com/zip", "_blank")
     setOpen(false)
    }
      

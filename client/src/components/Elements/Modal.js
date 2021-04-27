@@ -7,7 +7,7 @@ var querystring = require('querystring');
 function ModalExampleModal( props) {
   const [open, setOpen] = React.useState(false)
  
-  const urls = "http://localhost:4000/uploads/"+props.name+".pdf"
+  const urls = "https://sverifiles.herokuapp.com/uploads/"+props.name+".pdf"
 const [state,setState]=useState({
   id:props.name,
   obmarks:0,
