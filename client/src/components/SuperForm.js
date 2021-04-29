@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import {reactLocalStorage} from 'reactjs-localstorage'; 
 
-import { Button, Image,Divider,Segment, Form,Grid, Message, Icon, Input} from 'semantic-ui-react'
+import { Button,Divider,Segment, Form,Grid, Message, Icon, Input} from 'semantic-ui-react'
  
 var querystring = require('querystring');
 const options = [

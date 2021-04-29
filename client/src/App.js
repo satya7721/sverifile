@@ -29,7 +29,7 @@ export default function App() {
   const pathname = window.location.pathname;
    
   function NavBar(){
-    if(pathname=="/board"){
+    if(pathname==="/board"){
       return <Dash></Dash>
     }
   }

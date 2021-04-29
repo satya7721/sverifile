@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react'
-import { Card ,Grid,Menu,Label, Icon,Button,Modal,Image} from 'semantic-ui-react'
+import { Card ,Grid,Menu,Label, Icon,Button,Modal} from 'semantic-ui-react'
 import ReactExport from "react-export-excel";
-import {reactLocalStorage} from 'reactjs-localstorage'; 
+ 
 import axios from 'axios';
 import ModalOP from '../components/Elements/Modal.js'
 export default function Feed() {

@@ -150,41 +150,36 @@ export const TeacherLogin = (req,res)=>{
 
 
 export const Download = async (req,res)=>{
-    const zip = new AdmZip(); 
-  
-   
     
+           Sub.remove({},(erorr,data)=>{
+            if(erorr){
+                console.log(erorr);
+            }else{
+                console.log("deleted")
+            }
+    })
+
+    const zip = new AdmZip();     
     const p = "./uploads/"
-    try {
-         
-        console.log("YES")
+    
         const files = await fs.promises.readdir( './uploads' );
+        console.log(files);
         for( const file of files ) {
             zip.addLocalFile("./uploads/"+file); 
+            console.log(file);
         }
-        for( const file of files ) {
-            fs.unlinkSync(p+file)
-        }
-       
-      } catch(err) {
-        console.error(err)
-      }
-    Sub.deleteMany().then(()=>{
-    const downloadName = `${Date.now()}.zip`; 
-    const data = zip.toBuffer(); 
-    res.set('Content-Type','application/octet-stream'); 
-    res.set('Content-Disposition',`attachment; filename=${downloadName}`); 
-    res.set('Content-Length',data.length); 
-    res.send(downloadName); 
-    }).catch(()=>{
+        
         const downloadName = `${Date.now()}.zip`; 
-    const data = zip.toBuffer(); 
-    res.set('Content-Type','application/octet-stream'); 
-    res.set('Content-Disposition',`attachment; filename=${downloadName}`); 
-    res.set('Content-Length',data.length); 
-    res.send(downloadName);
-        res.send("false");
-    })
+        const data = zip.toBuffer(); 
+        res.set('Content-Type','application/octet-stream'); 
+        res.set('Content-Disposition',`attachment; filename=${downloadName}`); 
+        res.set('Content-Length',data.length); 
+        res.send(downloadName); 
+
+
+   
+   
+
 
 }
  

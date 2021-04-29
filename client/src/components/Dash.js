@@ -1,12 +1,11 @@
-import React, { Component,useState } from 'react'
-import { Input, Menu,Grid, Button, Container, Dropdown,Label,Icon, Modal } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import {  Menu,Grid, Button, Container, Dropdown,Label,Icon, Modal } from 'semantic-ui-react'
 import '../style/main.css'
-import axios from 'axios';
-import fs from 'fs'
+ 
 export default function  MenuExampleSecondary()  {
  
    const Delete = ()=>{
-    window.open("https://sverifiles.herokuapp.com/zip", "_blank")
+   
     setOpen(false)
    }
      

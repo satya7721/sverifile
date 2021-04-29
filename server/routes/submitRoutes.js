@@ -16,8 +16,8 @@ const FileM = mongoose.model('files',File);
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
 
-    cb(null, "./uploads"); //important this is a direct path fron our current file to storage location
-  },
+    cb(null, "./uploads",); 
+    },
   filename: (req, file, cb) => {
     
     const id =  uuidv4();

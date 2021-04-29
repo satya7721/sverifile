@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import { Button, Header, Form,Checkbox, Modal, Icon, Segment } from 'semantic-ui-react'
+import { Button, Header, Form, Modal, Icon, Segment } from 'semantic-ui-react'
 import {SketchField, Tools} from 'react-sketch';
 import axios from 'axios';
 
@@ -29,14 +29,14 @@ const change=(e)=>{
   })
 }
 const PUSH=()=>{
-  axios.put("http://localhost:4000/marks" ,querystring.stringify({
+  axios.put("https://sverifiles.herokuapp.com/marks" ,querystring.stringify({
     id:props.name,
     ob:state.obmarks,
     outm:state.outmarks
   }),config).then(res=>{
   
     
-    if(res.data==false){
+    if(res.data===false){
       console.log("error");
     }else{
     
